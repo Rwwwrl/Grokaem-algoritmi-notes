@@ -11,7 +11,7 @@ def get_index_of_value_in_array(value, array):
     используя бинарный поиск
     '''
     low = 0
-    high = len(array)
+    high = len(array) - 1
     while low < high:
         middle_index = int((low + high) / 2)
         middle_value = array[middle_index]
@@ -70,7 +70,7 @@ print('ALL OK')
 #### Удаление
 
 Удаление также лучше работает с связанными списками, все что нужно это поменять указатель.
-В списке аналогично добавление все последующие элементы нужно двигать вправо.
+В списке аналогично добавление все последующие элементы нужно двигать влево.
 
 |          | Массив | Связанные списки                     |
 | -------- | ------ | ------------------------------------ |
@@ -78,7 +78,11 @@ print('ALL OK')
 | Вставка  | O(n)   | O(1) (в начало или конец) / **O(n)** |
 | Удаление | O(n)   | O(1) (в начало или конец) / **O(n)** |
 
-**Вывод:** Как мы видим, если мы хотим использовать серединные значения, а не только начало и конец, то связанному списку также нужно O(n), и тогда он ни в чем не проигрывает списку **=>** **Мы используем связанные списки только тогда, когда нам ну нужно обращаться к элементам по середине.**
+**Вывод:** Как мы видим, если мы хотим использовать серединные значения, а не только начало и конец, то связанному списку также нужно O(n), и тогда он ни в чем не проигрывает списку **=>** **Мы используем связанные списки только тогда, когда нам нужно обращаться к элементам по концам.**
+
+---
+
+Если мы у нас есть задача добиться _чтения/добавления/удаления_ за _O(1)_, то нам нужно держать _маркировки_ не только на _начало/конец_, но и на _node_ по середине, в целом можно кастомизировать связанный список как нам удобно.
 
 ## Сортировка выбором
 
@@ -127,7 +131,7 @@ print(factorial(3))  # 6
 ## Стек
 
 **Стек** - структура данных  
-Все для чего она нужна это для добавления нового элемента вначало, и удаление элемента с конца/
+Все для чего она нужна это для добавления нового элемента вначало и удаления элемента с конца
 
 ### Стек вызовов
 
@@ -331,7 +335,7 @@ assert quick_sort([4, 2, 1, 10, 6, 9, 7, 9, 5])  == [1, 2, 4, 5, 6, 7, 9, 9, 10]
 
 Представим, что у нас есть друзья и у них в свою очередь тоже, среди всех них нам нужно найти ближайшего продавца манго (ближайший = в каком "поколении" друзей он находится - продавец манго среди вашей друзей ближе, чем среди друзей друга.).
 Так как тогда найти **ближайшего** продавца среди всех друзей?
-Пусть ваши друзья будут первого уровня, а друзья друзей - второго. Тогда первым делом мы проходися по очереди по всех друзьям и для каждого друга в эту же очередь мы закидываем его друзей. Первым делом мы обходим все друзей первого уровня и только потом, если не был найден продавец - друзей второго уровня. Почему это важно? Если мы пойдем смотреть друзей второго уровня, не посмотрев всех друзей первого уровня, и найдем там продавца, то это может быть не ближайший продавец, если был еще один в числе не просмотренных друзей первого уровня. 
+Пусть ваши друзья будут первого уровня, а друзья друзей - второго. Тогда первым делом мы проходися по очереди по всех друзьям и для каждого друга в эту же очередь мы закидываем его друзей. Первым делом мы обходим все друзей первого уровня и только потом, если не был найден продавец - друзей второго уровня. Почему это важно? Если мы пойдем смотреть друзей второго уровня, не посмотрев всех друзей первого уровня, и найдем там продавца, то это может быть не ближайший продавец, если был еще один в числе не просмотренных друзей первого уровня.
 ![alt](static/breath-first-search-example.jpg)
 _Рис.2. Алгоритм поиска кратчайшего расстояния на графе._
 У графа ребра могут быть направлены в обе стороны. Графы, у которых ребра направлены только в одном направление - являются **деревьями**.
@@ -418,4 +422,192 @@ assert get_nearby_mango_seller(graph_without_seller) == "There is no mango selle
 assert (
     get_nearby_mango_seller(graph_with_multiple_friends) == "mango_seller in ['alice', 'mango_seller'] is mango seller"
 )
+```
+
+### Взвешенный граф
+
+В предыдущей главе мы рассматривали _поиск в ширину_. Этот алгортим находит пусть с _минимальным сегментов_, но что если к каждому сегменту у нас еще будет привязано какое то число, допустим время (вес этого сегмента). В таком случае кратчайшим (наибыстрейшим) расстоянием будет не минимальное количестов ребер, а минимальное времмя затраченное на путь. Быстрее всего поиск такого пути делается при помощи **_алгоритма Дейкстры_**.
+![alt](static/взвешенный_граф__vs__невзвешенный_граф.png)
+_Рис.3. Поиск кратчайшего пути в взвешенном графе vs невзвешенном графе_
+Алгоритм Дейкстры работает только с _направленными ациклическими графами_.
+Использование алгоритмы Дейкстры невозможно в графе, содержащем ребра с отрицательным весом, вместо этого следует использовать _алгортм Беллмана-Форда_.
+![alt](static/вычисление_кратчайшего_пути_до_всех_точек_графа.jpg)
+_Рис.4. Поиск кратчайшего пути в взвешенном графе_
+
+> В книге алгоритм имеет другой вид только потому что начальное значение графа задается по другому.
+
+```python
+from collections import namedtuple, deque
+import math
+
+GraphNode = namedtuple('GraphNode', ['index', 'weight'])
+
+graph = {
+    1: [GraphNode(2, 2), GraphNode(3, 1), GraphNode(4, 4)],
+    2: [GraphNode(4, 7), GraphNode(5, 2.5)],
+    3: [GraphNode(5, 10), GraphNode(6, 4)],
+    4: [GraphNode(6, 5)],
+    5: [GraphNode(6, 4)],
+    6: [],
+}
+
+
+class Graph:
+    def __init__(self, graph: dict):
+        self.graph = graph
+
+    def _get_actualized_graph(self, start_position: int):
+        '''
+        тут мы убираем те точки графа, до которые не сможем дотянуться от стартовой позиции
+        ( чтобы они не участвовали в дальнейших расчетах в алгоритме )
+        '''
+        duplicates = set()
+        deq = deque()
+        deq.append(start_position)
+        result = []
+        while deq:
+            for node in self.graph[start_position]:
+                if not node.index in duplicates:
+                    deq.append(node.index)
+                    duplicates.add(node.index)
+            start_position = deq.popleft()
+            result.append(start_position)
+
+        actualized_graph = {i: self.graph[i] for i in result}
+        impossible_nodes_in_graph = {}
+        for key in self.graph:
+            if key not in actualized_graph:
+                impossible_nodes_in_graph[key] = 'До этого узла невозможно дотянуться со стартовой позиции'
+        return actualized_graph, impossible_nodes_in_graph
+
+    @staticmethod
+    def _get_smallest_node_in_a_row(row: list):
+        '''
+        получить минимальное значение и его индекс в массиве
+        '''
+        smallest_node_weight, smallest_node_index = math.inf, -1
+        for key in row:
+            if row[key] < smallest_node_weight:
+                smallest_node_weight = row[key]
+                smallest_node_index = key
+        return smallest_node_weight, smallest_node_index
+
+    @staticmethod
+    def _create_row(actualized_graph: dict, actual_row: dict, previous_row: dict, actual_result: dict) -> dict:
+        '''
+        сконструировать массив на основе уже найденных максимумов, предыдушей и
+        актуальной строки
+            [0, inf, inf, inf]
+        +
+                [2,   1]
+            (0 мы уже определили как максимум)
+        ------------------------
+            [inf, 2, 1,   inf]
+        '''
+        result = {}
+        for i in actualized_graph.keys():
+            node_value = actual_row.get(i, None)
+            node_value_from_result = actual_result.get(i, None)
+            if node_value_from_result is not None:
+                node_value = math.inf
+            elif not node_value:
+                node_value = previous_row[i]
+            result[i] = node_value
+        return result
+
+    def _get_shortest_paths_to_all_nodes_in_graph(self, actualized_graph: dict, start_position: int):
+        '''
+        получить минимальные по весу пути до каждой точки при помощи
+        алгоритма Дейкстры
+        '''
+
+        rows_deque = deque()
+        result = {start_position: 0}
+
+        # инициализируем начальную строку
+        initial_row = {i: math.inf for i in actualized_graph}
+        initial_row[start_position] = 0
+        rows_deque.append(initial_row)
+
+        # указатели на индекс и значение текущего узла
+        current_index, current_value = start_position, 0
+
+        while len(result) < len(actualized_graph):
+            row_values = {}
+            previous_row = rows_deque.popleft()
+
+            for node in actualized_graph[current_index]:
+                summ = node.weight + current_value
+                node_weight_on_previous_row = previous_row[node.index]
+                if summ < node_weight_on_previous_row:
+                    row_values[node.index] = summ
+                else:
+                    row_values[node.index] = node_weight_on_previous_row
+            row = self._create_row(actualized_graph, row_values, previous_row, result)
+            rows_deque.append(row)
+
+            smallest_node_weight, smallest_node_index = self._get_smallest_node_in_a_row(row)
+            current_index = smallest_node_index
+            current_value = smallest_node_weight
+            result[smallest_node_index] = smallest_node_weight
+
+        return result
+
+    def get_shortest_paths_to_nodes(self, start_position: int = 1):
+        '''
+        метод, где мы сначала актуализирум граф, для которого потом и вычисляем по алгоритму Дейкстры кратчайшие пути
+        ( у меня была логика написать алгоритм Дейксты в вакууме, а все преобразования нужные для него и после него
+        производить в другом методе )
+        '''
+        actualized_graph, impossible_nodes_in_graph = self._get_actualized_graph(start_position)
+        calcualted_weight_to_nodes = self._get_shortest_paths_to_all_nodes_in_graph(actualized_graph, start_position)
+        calcualted_weight_to_nodes.update(impossible_nodes_in_graph)
+        return dict(sorted(calcualted_weight_to_nodes.items()))
+
+
+graph = Graph(graph)
+
+assert graph.get_shortest_paths_to_nodes() == {1: 0, 2: 2, 3: 1, 4: 4, 5: 4.5, 6: 5}
+assert graph.get_shortest_paths_to_nodes(start_position=2) == {
+    1: 'До этого узла невозможно дотянуться со стартовой позиции',
+    2: 0,
+    3: 'До этого узла невозможно дотянуться со стартовой позиции',
+    4: 7,
+    5: 2.5,
+    6: 6.5
+}
+assert graph.get_shortest_paths_to_nodes(start_position=3) == {
+    1: 'До этого узла невозможно дотянуться со стартовой позиции',
+    2: 'До этого узла невозможно дотянуться со стартовой позиции',
+    3: 0,
+    4: 'До этого узла невозможно дотянуться со стартовой позиции',
+    5: 10,
+    6: 4
+}
+
+assert graph.get_shortest_paths_to_nodes(start_position=4) == {
+    1: 'До этого узла невозможно дотянуться со стартовой позиции',
+    2: 'До этого узла невозможно дотянуться со стартовой позиции',
+    3: 'До этого узла невозможно дотянуться со стартовой позиции',
+    4: 0,
+    5: 'До этого узла невозможно дотянуться со стартовой позиции',
+    6: 5
+}
+assert graph.get_shortest_paths_to_nodes(start_position=5) == {
+    1: 'До этого узла невозможно дотянуться со стартовой позиции',
+    2: 'До этого узла невозможно дотянуться со стартовой позиции',
+    3: 'До этого узла невозможно дотянуться со стартовой позиции',
+    4: 'До этого узла невозможно дотянуться со стартовой позиции',
+    5: 0,
+    6: 4
+}
+assert graph.get_shortest_paths_to_nodes(start_position=6) == {
+    1: 'До этого узла невозможно дотянуться со стартовой позиции',
+    2: 'До этого узла невозможно дотянуться со стартовой позиции',
+    3: 'До этого узла невозможно дотянуться со стартовой позиции',
+    4: 'До этого узла невозможно дотянуться со стартовой позиции',
+    5: 'До этого узла невозможно дотянуться со стартовой позиции',
+    6: 0
+}
+
 ```
