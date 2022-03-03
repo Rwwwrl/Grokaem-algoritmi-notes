@@ -629,6 +629,7 @@ assert graph.get_shortest_paths_to_nodes(start_position=6) == {
 ## Деревья
 
 **[Посмотреть на мою реализацию бинарного дерева можно тут](https://github.com/Rwwwrl/binary_tree)**
+
 Бинарное дерево выглядет вот так:
 ![alt](static/binary_tree.png)
 
